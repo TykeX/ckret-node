@@ -1,0 +1,21 @@
+{
+  "name": "ckret",
+  "version": "1.0.0",
+  "description": "lib for managing secret manager",
+  "main": "index.js",
+  "scripts": {
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "build": "tsc"
+  },
+  "author": "Pawan Kumar",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/aws-sdk": "^2.7.0",
+    "@types/node": "^18.0.0",
+    "prettier": "^2.7.1",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.7.4"
+  }
+}
