@@ -1,6 +1,6 @@
 {
   "name": "ckret",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "lib for managing secret manager",
   "main": "index.js",
   "scripts": {

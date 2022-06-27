@@ -27,7 +27,6 @@ const cache: CacheType = {
 
 async function getCkret(): Promise<any> {
   if (cache.value === undefined || cache.exp.getTime() <= new Date().getTime()) {
-    console.log({ level: "info", message: 'cache not found or not valid' });
     let s = await sm?.getSecretValue({ SecretId: getCkretName() }).promise();
     cache.value = s?.SecretString;
     cache.exp = new Date(new Date().getTime() + 1000 * 60 * 10);
