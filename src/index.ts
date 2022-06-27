@@ -10,7 +10,8 @@ function getCkretName(): string {
 
 let sm: SecretManager | undefined = undefined;
 
-function init(option: SecretManager.ClientConfiguration) {
+function init(option: SecretManager.ClientConfiguration): void {
+  console.log({ level: "info", "selected_ckret": getCkretName() })
   sm = new SecretManager(option);
 }
 
@@ -26,7 +27,7 @@ const cache: CacheType = {
 
 async function getCkret(): Promise<any> {
   if (cache.value === undefined || cache.exp.getTime() <= new Date().getTime()) {
-    console.log('cache not found or not valid');
+    console.log({ level: "info", message: 'cache not found or not valid' });
     let s = await sm?.getSecretValue({ SecretId: getCkretName() }).promise();
     cache.value = s?.SecretString;
     cache.exp = new Date(new Date().getTime() + 1000 * 60 * 10);
@@ -34,7 +35,6 @@ async function getCkret(): Promise<any> {
   return JSON.parse(cache.value!);
 }
 
-export default {
-  init: init,
-  getCkret: getCkret,
-};
+export { init }
+export { getCkret }
+
