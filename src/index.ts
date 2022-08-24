@@ -5,6 +5,7 @@ function getCkretName(): string {
   if (e === 'dev' || e === 'development') return 'ckret/dev';
   else if (e === 'stage' || e === 'staging') return 'ckret/staging';
   else if (e === 'prod' || e === 'production') return 'ckret/prod';
+  else if (e === 'sandbox') return 'ckret/sandbox';
   else return 'ckret/local';
 }
 
