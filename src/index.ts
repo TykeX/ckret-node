@@ -35,6 +35,8 @@ async function getCkret(): Promise<any> {
   return JSON.parse(cache.value!);
 }
 
-export { init }
-export { getCkret }
+export default {
+  init,
+  getCkret
+}
 
