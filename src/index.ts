@@ -3,7 +3,7 @@ import SecretManager from 'aws-sdk/clients/secretsmanager';
 function getCkretName(): string {
   const e = (process.env.ENVIRONMENT ?? '').toLowerCase();
   if (e === 'dev' || e === 'development') return 'ckret/dev';
-  else if (e === 'stage' || e === 'staging') return 'ckret/staging';
+  else if (e === 'stage' || e === 'staging') return 'ckret/stage';
   else if (e === 'prod' || e === 'production') return 'ckret/prod';
   else if (e === 'sandbox') return 'ckret/sandbox';
   else return 'ckret/local';
