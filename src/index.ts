@@ -1,42 +1,59 @@
 import SecretManager from 'aws-sdk/clients/secretsmanager';
 
-function getCkretName(): string {
-  const e = (process.env.ENVIRONMENT ?? '').toLowerCase();
-  if (e === 'dev' || e === 'development') return 'ckret/dev';
-  else if (e === 'stage' || e === 'staging') return 'ckret/stage';
-  else if (e === 'prod' || e === 'production') return 'ckret/prod';
-  else if (e === 'sandbox') return 'ckret/sandbox';
-  else return 'ckret/local';
-}
-
-let sm: SecretManager | undefined = undefined;
-
-function init(option: SecretManager.ClientConfiguration): void {
-  console.log({ level: "info", "selected_ckret": getCkretName() })
-  sm = new SecretManager(option);
-}
-
-type CacheType = {
-  value: string | undefined;
-  exp: Date;
-};
-
-const cache: CacheType = {
-  value: undefined,
-  exp: new Date(),
-};
-
-async function getCkret(): Promise<any> {
-  if (cache.value === undefined || cache.exp.getTime() <= new Date().getTime()) {
-    let s = await sm?.getSecretValue({ SecretId: getCkretName() }).promise();
-    cache.value = s?.SecretString;
-    cache.exp = new Date(new Date().getTime() + 1000 * 60 * 10);
+export class Ckret {
+  private value?: string;
+  private exp?: Date;
+  private sm?: SecretManager
+  /**
+   * secretId (name) of this ckret instance
+   */
+  private _name: string;
+  /**
+   * @param option - aws config for secret manager client like {region: "region-1", ... }
+   * @param name - secretId (name) of the secret
+   *
+   */
+  constructor(option: SecretManager.ClientConfiguration, name: string) {
+    this.sm = new SecretManager(option)
+    this._name = name
   }
-  return JSON.parse(cache.value!);
+
+  /**
+   * @returns value of this ckret instance
+   */
+  async getCkret(): Promise<any> {
+    if (this.value === undefined || this.exp === undefined || this.exp.getTime() <= new Date().getTime()) {
+      const s = await this.sm?.getSecretValue({ SecretId: this._name }).promise();
+      this.value = s?.SecretString;
+      this.exp = new Date(new Date().getTime() + 1000 * 60 * 10); // 10 minute
+    }
+    return JSON.parse(this.value!);
+  }
+
+  /**
+   * @returns secretId (name) of this ckret instance
+   */
+  public name() {
+    return this._name
+  }
 }
 
+let instance: Ckret;
 export default {
-  init,
-  getCkret
+  Ckret,
+  init:
+    /**
+     * initializes default ckret instance
+     */
+    (option: SecretManager.ClientConfiguration, name: string) => instance = new Ckret(option, name),
+  getCkret:
+    /**
+     * @returns value of default ckret instance
+     */
+    async (): Promise<any> => instance!.getCkret(),
+  name:
+    /**
+     * @returns secretId (name) of default ckret instance
+     */
+    (): string => instance!.name()
 }
-
